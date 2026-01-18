@@ -1,0 +1,44 @@
+.services-page {
+    padding-top: 4rem;
+}
+
+.services-list {
+    display: flex;
+    flex-direction: column;
+    gap: 4rem;
+}
+
+.service-item {
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+    padding: 2rem;
+    background-color: #f9fafb;
+    border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.service-item.reverse {
+    flex-direction: row-reverse;
+    background-color: white;
+    border: 1px solid #eee;
+}
+
+.service-content h3 {
+    color: var(--secondary-color);
+    margin-bottom: 1rem;
+}
+
+.service-content p {
+    color: var(--text-color);
+    font-size: 1.1rem;
+}
+
+@media (max-width: 768px) {
+
+    .service-item,
+    .service-item.reverse {
+        flex-direction: column;
+        text-align: center;
+    }
+}
