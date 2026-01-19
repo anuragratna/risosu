@@ -22,11 +22,14 @@ const ApplyForm = () => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        console.log('Form Submitted', formData);
-        // Here you would integrate with EmailJS or a backend API
-        // Example: emailjs.sendForm('service_id', 'template_id', e.target, 'user_id')
+        // Construct mailto link
+        const subject = `Job Application: ${formData.position} - ${formData.fullName}`;
+        const body = `Name: ${formData.fullName}%0D%0AEmail: ${formData.email}%0D%0APhone: ${formData.phone}%0D%0A%0D%0ANote: Please attach your resume manually to this email.`;
+
+        // Open default email client
+        window.location.href = `mailto:hr@risosu.com?subject=${encodeURIComponent(subject)}&body=${body}`;
+
         setSubmitted(true);
-        alert('Application submitted! (Simulation: This is where the email would be sent)');
     };
 
     if (submitted) {
