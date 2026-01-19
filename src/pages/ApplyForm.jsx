@@ -1,42 +1,67 @@
 import React, { useState } from 'react';
 import './ApplyForm.css';
+import { supabase } from '../supabaseClient';
 
 const ApplyForm = () => {
     const [submitted, setSubmitted] = useState(false);
     const [isSubmitting, setIsSubmitting] = useState(false);
+    const [fullName, setFullName] = useState('');
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         setIsSubmitting(true);
 
         const formData = new FormData(e.target);
-        formData.append('access_key', 'e0dfcfa1-29a5-4631-ba60-e3f1ef49f04c');
-
-        // Add custom subject line
+        const name = formData.get('fullName');
+        const email = formData.get('email');
+        const phone = formData.get('phone');
         const position = formData.get('position');
-        const fullName = formData.get('fullName');
-        formData.append('subject', `Job Application: ${position} - ${fullName}`);
+        const resumeFile = formData.get('attachment');
 
-        // Redirect to hr@risosu.com
-        formData.append('redirect', 'https://risosu.com/contact-us');
+        setFullName(name);
 
         try {
-            const response = await fetch('https://api.web3forms.com/submit', {
-                method: 'POST',
-                body: formData
-            });
+            // 1. Upload Resume to Supabase Storage
+            const fileExt = resumeFile.name.split('.').pop();
+            const fileName = `${Date.now()}_${name.replace(/\s+/g, '_')}.${fileExt}`;
+            const { data: uploadData, error: uploadError } = await supabase.storage
+                .from('resumes')
+                .upload(fileName, resumeFile);
 
-            const data = await response.json();
-
-            if (data.success) {
-                setSubmitted(true);
-                e.target.reset();
-            } else {
-                alert('Submission failed. Please try again.');
+            if (uploadError) {
+                throw new Error('Resume upload failed: ' + uploadError.message);
             }
+
+            // Get public URL
+            const { data: publicUrlData } = supabase.storage
+                .from('resumes')
+                .getPublicUrl(fileName);
+
+            const resumeUrl = publicUrlData.publicUrl;
+
+            // 2. Insert Application into Database
+            const { error: insertError } = await supabase
+                .from('applications')
+                .insert([
+                    {
+                        full_name: name,
+                        email: email,
+                        phone: phone,
+                        position: position,
+                        resume_url: resumeUrl
+                    }
+                ]);
+
+            if (insertError) {
+                throw new Error('Database insertion failed: ' + insertError.message);
+            }
+
+            setSubmitted(true);
+            e.target.reset();
+
         } catch (error) {
-            console.error('Error:', error);
-            alert('An error occurred. Please try again.');
+            console.error('Submission Error:', error);
+            alert(`Application failed: ${error.message}`);
         } finally {
             setIsSubmitting(false);
         }
@@ -45,8 +70,11 @@ const ApplyForm = () => {
     if (submitted) {
         return (
             <div className="container section text-center">
-                <h2>Thank You!</h2>
-                <p>Your application has been submitted successfully. We will review your resume and be in touch shortly.</p>
+                <h2>Thank You, {fullName}!</h2>
+                <p>Your application has been received successfully.</p>
+                <p style={{ fontSize: '0.9rem', color: '#666', marginTop: '1rem' }}>
+                    Your details and resume have been securely stored in our database.
+                </p>
                 <button className="btn" onClick={() => setSubmitted(false)}>Submit Another Application</button>
             </div>
         );
@@ -114,7 +142,7 @@ const ApplyForm = () => {
                     </div>
 
                     <button type="submit" className="btn submit-btn" disabled={isSubmitting}>
-                        {isSubmitting ? 'Submitting...' : 'Submit Application'}
+                        {isSubmitting ? 'Uploading...' : 'Submit Application'}
                     </button>
                 </form>
             </div>
