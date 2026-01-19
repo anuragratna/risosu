@@ -12,10 +12,12 @@
     text-align: center;
 }
 
-.footer-content h3 {
-    color: white;
-    /* Override default h3 color */
-    margin-bottom: 0.5rem;
+.footer-logo {
+    height: 60px;
+    width: auto;
+    background-color: white;
+    padding: 8px;
+    border-radius: 4px;
 }
 
 .footer-bottom {
