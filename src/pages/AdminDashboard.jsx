@@ -86,6 +86,22 @@ const AdminDashboard = () => {
     };
 
     // --- POSITION LOGIC ---
+    const [newDescription, setNewDescription] = useState('');
+
+    // ... (rest of logic)
+
+    const handleDeletePosition = async (id) => {
+        if (!window.confirm('Are you sure you want to delete this position?')) return;
+        try {
+            const { error } = await supabase.from('positions').delete().eq('id', id);
+            if (error) throw error;
+            setPositions(positions.filter(p => p.id !== id));
+            setStats(prev => ({ ...prev, active_positions: prev.active_positions - 1 })); // Approximation
+        } catch (error) {
+            alert('Error deleting position: ' + error.message);
+        }
+    };
+
     const handleAddPosition = async (e) => {
         e.preventDefault();
         if (!newPosition.trim()) return;
@@ -93,13 +109,18 @@ const AdminDashboard = () => {
         try {
             const { data, error } = await supabase
                 .from('positions')
-                .insert([{ title: newPosition.trim(), is_active: true }])
+                .insert([{
+                    title: newPosition.trim(),
+                    description: newDescription.trim(),
+                    is_active: true
+                }])
                 .select();
 
             if (error) throw error;
 
             setPositions([...positions, data[0]]);
             setNewPosition('');
+            setNewDescription('');
             setStats(prev => ({ ...prev, active_positions: prev.active_positions + 1 }));
 
         } catch (error) {
@@ -161,15 +182,23 @@ const AdminDashboard = () => {
                     <h3 style={{ marginBottom: '1rem', color: 'var(--admin-primary)' }}>Manage Positions</h3>
 
                     {/* Add Position Form */}
-                    <form onSubmit={handleAddPosition} style={{ display: 'flex', gap: '1rem', marginBottom: '1.5rem' }}>
-                        <input
-                            type="text"
-                            placeholder="New Position Title (e.g. HR Manager)"
-                            value={newPosition}
-                            onChange={(e) => setNewPosition(e.target.value)}
-                            style={{ padding: '0.75rem', borderRadius: '6px', border: '1px solid #ddd', flex: 1 }}
+                    <form onSubmit={handleAddPosition} style={{ display: 'flex', flexDirection: 'column', gap: '1rem', marginBottom: '1.5rem', background: '#f1f5f9', padding: '1rem', borderRadius: '8px' }}>
+                        <div style={{ display: 'flex', gap: '1rem' }}>
+                            <input
+                                type="text"
+                                placeholder="Position Title (e.g. HR Manager)"
+                                value={newPosition}
+                                onChange={(e) => setNewPosition(e.target.value)}
+                                style={{ padding: '0.75rem', borderRadius: '6px', border: '1px solid #ddd', flex: 1 }}
+                            />
+                            <button type="submit" className="btn" style={{ padding: '0.75rem 1.5rem', fontSize: '0.9rem' }}>Add Position</button>
+                        </div>
+                        <textarea
+                            placeholder="Position Description (Requirements, Responsibilities, etc.)"
+                            value={newDescription}
+                            onChange={(e) => setNewDescription(e.target.value)}
+                            style={{ padding: '0.75rem', borderRadius: '6px', border: '1px solid #ddd', minHeight: '80px' }}
                         />
-                        <button type="submit" className="btn" style={{ padding: '0.75rem 1.5rem', fontSize: '0.9rem' }}>Add Position</button>
                     </form>
 
                     {/* Positions List */}
@@ -180,28 +209,41 @@ const AdminDashboard = () => {
                                 background: '#f8fafc',
                                 borderRadius: '8px',
                                 border: '1px solid #e2e8f0',
+                                opacity: pos.is_active ? 1 : 0.6,
                                 display: 'flex',
-                                justifyContent: 'space-between',
-                                alignItems: 'center',
-                                opacity: pos.is_active ? 1 : 0.6
+                                flexDirection: 'column',
+                                gap: '0.5rem'
                             }}>
                                 {editingId === pos.id ? (
-                                    <div style={{ display: 'flex', gap: '0.5rem', flex: 1 }}>
+                                    <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', flex: 1 }}>
                                         <input
                                             value={editingTitle}
                                             onChange={(e) => setEditingTitle(e.target.value)}
-                                            style={{ padding: '0.25rem', flex: 1 }}
+                                            style={{ padding: '0.5rem', border: '1px solid #ddd', borderRadius: '4px' }}
                                         />
-                                        <button onClick={() => handleSavePosition(pos.id)} className="btn-sm">Save</button>
-                                        <button onClick={() => setEditingId(null)} className="btn-sm" style={{ background: '#ccc' }}>Cancel</button>
+                                        <div style={{ display: 'flex', gap: '0.5rem' }}>
+                                            <button onClick={() => handleSavePosition(pos.id)} className="btn-sm">Save</button>
+                                            <button onClick={() => setEditingId(null)} className="btn-sm" style={{ background: '#ccc' }}>Cancel</button>
+                                        </div>
                                     </div>
                                 ) : (
                                     <>
-                                        <span style={{ fontWeight: 500 }}>{pos.title}</span>
-                                        <div style={{ display: 'flex', gap: '0.5rem' }}>
+                                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+                                            <span style={{ fontWeight: 600, fontSize: '1.1rem' }}>{pos.title}</span>
+                                            <button
+                                                onClick={() => handleDeletePosition(pos.id)}
+                                                style={{ border: 'none', background: 'none', color: '#ef4444', cursor: 'pointer', fontSize: '0.8rem' }}
+                                                title="Delete Position"
+                                            >
+                                                ✕
+                                            </button>
+                                        </div>
+                                        <p style={{ fontSize: '0.9rem', color: '#64748b', whiteSpace: 'pre-wrap' }}>{pos.description || 'No description available.'}</p>
+
+                                        <div style={{ display: 'flex', gap: '0.5rem', marginTop: 'auto', paddingTop: '0.5rem' }}>
                                             <button
                                                 onClick={() => handleEditPosition(pos.id, pos.title)}
-                                                style={{ border: 'none', background: 'none', color: '#3b82f6', cursor: 'pointer' }}
+                                                style={{ border: 'none', background: 'none', color: '#3b82f6', cursor: 'pointer', fontSize: '0.9rem', fontWeight: 500 }}
                                             >
                                                 Edit
                                             </button>
@@ -209,15 +251,16 @@ const AdminDashboard = () => {
                                                 onClick={() => handleTogglePosition(pos.id, pos.is_active)}
                                                 style={{
                                                     border: 'none',
-                                                    background: pos.is_active ? '#dbeafe' : '#f1f5f9',
+                                                    background: pos.is_active ? '#dbeafe' : '#e2e8f0',
                                                     color: pos.is_active ? '#1e40af' : '#64748b',
-                                                    padding: '0.25rem 0.5rem',
+                                                    padding: '0.25rem 0.6rem',
                                                     borderRadius: '4px',
                                                     cursor: 'pointer',
-                                                    fontSize: '0.8rem'
+                                                    fontSize: '0.8rem',
+                                                    fontWeight: 500
                                                 }}
                                             >
-                                                {pos.is_active ? 'Active' : 'Hidden'}
+                                                {pos.is_active ? 'Active' : 'Inactive'}
                                             </button>
                                         </div>
                                     </>

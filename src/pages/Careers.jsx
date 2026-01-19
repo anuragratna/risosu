@@ -48,12 +48,15 @@ const Careers = () => {
                             {positions.map(pos => (
                                 <li key={pos.id} style={{
                                     background: '#f8fafc',
-                                    padding: '1rem',
+                                    padding: '1.5rem',
                                     borderRadius: '8px',
                                     border: '1px solid #e2e8f0',
                                     listStyle: 'none'
                                 }}>
-                                    <strong>{pos.title}</strong>
+                                    <h4 style={{ margin: '0 0 0.5rem 0', color: '#1e293b' }}>{pos.title}</h4>
+                                    <p style={{ margin: 0, color: '#64748b', fontSize: '0.95rem', lineHeight: '1.5', whiteSpace: 'pre-line' }}>
+                                        {pos.description || "Join our dynamic team and help shape the future of Risosu Consulting."}
+                                    </p>
                                 </li>
                             ))}
                         </ul>

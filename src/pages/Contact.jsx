@@ -13,7 +13,7 @@ const Contact = () => {
             <div className="contact-grid">
                 {/* Section A: Who We Are / Leadership */}
                 <div className="contact-info">
-                    <h3>Who We Are</h3>
+                    <h3>Leadership Team</h3>
                     <div className="leadership-card" style={{ marginTop: '1.5rem', textAlign: 'center' }}>
                         <img
                             src="/images/vandana-saxena.jpg"
