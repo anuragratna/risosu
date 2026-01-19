@@ -112,7 +112,6 @@ const ApplyForm = () => {
                     </div>
 
                     <button type="submit" className="btn submit-btn">Submit Application</button>
-                    <p className="note">Note: This form requires a backend service to actually send emails.</p>
                 </form>
             </div>
         </div>
