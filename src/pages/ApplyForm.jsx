@@ -6,8 +6,26 @@ const ApplyForm = () => {
     const [submitted, setSubmitted] = useState(false);
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [fullName, setFullName] = useState('');
+    const [positions, setPositions] = useState([]);
+    const [loadingPositions, setLoadingPositions] = useState(true);
+
+    // Fetch positions on load
+    React.useEffect(() => {
+        const fetchPositions = async () => {
+            const { data, error } = await supabase
+                .from('positions')
+                .select('*')
+                .eq('is_active', true)
+                .order('title');
+
+            if (data) setPositions(data);
+            setLoadingPositions(false);
+        };
+        fetchPositions();
+    }, []);
 
     const handleSubmit = async (e) => {
+        // ... (rest of submit logic stays same)
         e.preventDefault();
         setIsSubmitting(true);
 
@@ -122,10 +140,12 @@ const ApplyForm = () => {
                         <select
                             id="position"
                             name="position"
-                            defaultValue="Mobile Application Developer"
+                            required
                         >
-                            <option value="Mobile Application Developer">Mobile Application Developer</option>
-                            <option value="Sr Java Developer">Sr Java Developer</option>
+                            <option value="">Select a position...</option>
+                            {!loadingPositions && positions.map(pos => (
+                                <option key={pos.id} value={pos.title}>{pos.title}</option>
+                            ))}
                             <option value="Other">Other</option>
                         </select>
                     </div>
