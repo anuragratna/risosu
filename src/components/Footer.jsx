@@ -6,7 +6,7 @@ const Footer = () => {
         <footer className="footer">
             <div className="container footer-container">
                 <div className="footer-content">
-                    <h3>Risosu Consulting</h3>
+                    <img src="/src/assets/logo.jpg" alt="Risosu Consulting" className="footer-logo" />
                 </div>
                 <div className="footer-bottom">
                     <p>Copyright © {new Date().getFullYear()} Risosu Consulting - All Rights Reserved.</p>

@@ -13,7 +13,7 @@ const Header = () => {
     <header className="header">
       <div className="container header-container">
         <Link to="/" className="logo">
-          Risosu Consulting
+          <img src="/src/assets/logo.jpg" alt="Risosu Consulting" className="logo-img" />
         </Link>
 
         <div className="mobile-menu-icon" onClick={toggleMenu}>

@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import './Contact.css';
 
 const Contact = () => {
@@ -30,7 +31,7 @@ const Contact = () => {
                         <li>Mobile Application Developer</li>
                         <li>Sr Java Developer</li>
                     </ul>
-                    <button className="btn apply-btn">Apply Now</button>
+                    <Link to="/apply" className="btn apply-btn">Apply Now</Link>
                 </div>
             </div>
         </div>
