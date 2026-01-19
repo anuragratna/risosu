@@ -14,7 +14,19 @@ const Contact = () => {
                 {/* Section A: Who We Are / Leadership */}
                 <div className="contact-info">
                     <h3>Who We Are</h3>
-                    <div className="leadership-card" style={{ marginTop: '1.5rem' }}>
+                    <div className="leadership-card" style={{ marginTop: '1.5rem', textAlign: 'center' }}>
+                        <img
+                            src="/images/vandana-saxena.jpg"
+                            alt="Vandana Saxena"
+                            style={{
+                                width: '150px',
+                                height: '150px',
+                                borderRadius: '50%',
+                                objectFit: 'cover',
+                                boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)',
+                                marginBottom: '1rem'
+                            }}
+                        />
                         <h4 style={{ color: 'var(--primary-color)', marginBottom: '0.5rem' }}>Vandana Saxena</h4>
                         <p style={{ fontStyle: 'italic', color: '#666' }}>Founder and Director</p>
                         <p style={{ marginTop: '1rem' }}>
