@@ -1,8 +1,33 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { supabase } from '../supabaseClient';
 import './Contact.css';
 
 const Contact = () => {
+    const [positions, setPositions] = React.useState([]);
+    const [loading, setLoading] = React.useState(true);
+
+    React.useEffect(() => {
+        const fetchPositions = async () => {
+            try {
+                const { data, error } = await supabase
+                    .from('positions')
+                    .select('*')
+                    .eq('is_active', true)
+                    .order('created_at', { ascending: false });
+
+                if (error) throw error;
+                setPositions(data || []);
+            } catch (error) {
+                console.error('Error fetching positions:', error);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchPositions();
+    }, []);
+
     return (
         <div className="contact-page container section">
             <div className="contact-header">
@@ -27,10 +52,19 @@ const Contact = () => {
                 <div className="hiring-section">
                     <h3>We're Hiring!</h3>
                     <p>Join Our Team. If you're interested in one of our open positions, start by applying here and attaching your resume.</p>
-                    <ul>
-                        <li>Mobile Application Developer</li>
-                        <li>Sr Java Developer</li>
-                    </ul>
+
+                    {loading ? (
+                        <p>Loading open positions...</p>
+                    ) : positions.length > 0 ? (
+                        <ul>
+                            {positions.map(pos => (
+                                <li key={pos.id}>{pos.title}</li>
+                            ))}
+                        </ul>
+                    ) : (
+                        <p>No current openings, but we are always looking for talent!</p>
+                    )}
+
                     <Link to="/apply" className="btn apply-btn">Apply Now</Link>
                 </div>
             </div>
