@@ -6,6 +6,13 @@ import './Contact.css'; // Reusing styles for consistency
 const Careers = () => {
     const [positions, setPositions] = React.useState([]);
     const [loading, setLoading] = React.useState(true);
+    const [expandedPositions, setExpandedPositions] = React.useState([]);
+
+    const toggleExpand = (id) => {
+        setExpandedPositions(prev =>
+            prev.includes(id) ? prev.filter(pId => pId !== id) : [...prev, id]
+        );
+    };
 
     React.useEffect(() => {
         const fetchPositions = async () => {
@@ -45,20 +52,38 @@ const Careers = () => {
                         <p>Loading open positions...</p>
                     ) : positions.length > 0 ? (
                         <ul style={{ margin: '2rem 0', display: 'grid', gap: '1rem' }}>
-                            {positions.map(pos => (
-                                <li key={pos.id} style={{
-                                    background: '#f8fafc',
-                                    padding: '1.5rem',
-                                    borderRadius: '8px',
-                                    border: '1px solid #e2e8f0',
-                                    listStyle: 'none'
-                                }}>
-                                    <h4 style={{ margin: '0 0 0.5rem 0', color: '#1e293b' }}>{pos.title}</h4>
-                                    <p style={{ margin: 0, color: '#64748b', fontSize: '0.95rem', lineHeight: '1.5', whiteSpace: 'pre-line' }}>
-                                        {pos.description || "Join our dynamic team and help shape the future of Risosu Consulting."}
-                                    </p>
-                                </li>
-                            ))}
+                            {positions.map(pos => {
+                                const isExpanded = expandedPositions.includes(pos.id);
+                                return (
+                                    <li key={pos.id} onClick={() => toggleExpand(pos.id)} style={{
+                                        background: '#f8fafc',
+                                        padding: '1.5rem',
+                                        borderRadius: '8px',
+                                        border: '1px solid #e2e8f0',
+                                        listStyle: 'none',
+                                        cursor: 'pointer',
+                                        transition: 'all 0.2s ease'
+                                    }}>
+                                        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                                            <h4 style={{ margin: 0, color: '#1e293b' }}>{pos.title}</h4>
+                                            <span style={{
+                                                transform: isExpanded ? 'rotate(180deg)' : 'rotate(0deg)',
+                                                transition: 'transform 0.3s',
+                                                fontSize: '1.2rem',
+                                                color: '#94a3b8'
+                                            }}>↓</span>
+                                        </div>
+
+                                        {isExpanded && (
+                                            <div style={{ marginTop: '1rem', paddingTop: '1rem', borderTop: '1px solid #e2e8f0', animation: 'fadeIn 0.3s' }}>
+                                                <p style={{ margin: 0, color: '#64748b', fontSize: '0.95rem', lineHeight: '1.6', whiteSpace: 'pre-line' }}>
+                                                    {pos.description || "Join our dynamic team and help shape the future of Risosu Consulting."}
+                                                </p>
+                                            </div>
+                                        )}
+                                    </li>
+                                );
+                            })}
                         </ul>
                     ) : (
                         <p>No current openings, but we are always looking for talent!</p>

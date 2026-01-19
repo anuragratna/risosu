@@ -11,6 +11,13 @@ const AdminDashboard = () => {
     const [newPosition, setNewPosition] = useState('');
     const [editingId, setEditingId] = useState(null);
     const [editingTitle, setEditingTitle] = useState('');
+    const [expandedPositions, setExpandedPositions] = useState([]);
+
+    const toggleExpand = (id) => {
+        setExpandedPositions(prev =>
+            prev.includes(id) ? prev.filter(pId => pId !== id) : [...prev, id]
+        );
+    };
 
     const navigate = useNavigate();
 
