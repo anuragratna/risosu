@@ -8,6 +8,8 @@ import Contact from './pages/Contact';
 import Resources from './pages/Resources';
 import ArticleDetail from './pages/ArticleDetail';
 import ApplyForm from './pages/ApplyForm';
+import AdminLogin from './pages/AdminLogin';
+import AdminDashboard from './pages/AdminDashboard';
 
 function App() {
   return (
@@ -22,6 +24,8 @@ function App() {
             <Route path="/apply" element={<ApplyForm />} />
             <Route path="/more" element={<Resources />} />
             <Route path="/resources/:id" element={<ArticleDetail />} />
+            <Route path="/admin" element={<AdminDashboard />} />
+            <Route path="/admin/login" element={<AdminLogin />} />
           </Routes>
         </main>
         <Footer />
