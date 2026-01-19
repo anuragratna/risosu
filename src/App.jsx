@@ -5,6 +5,7 @@ import Footer from './components/Footer';
 import Home from './pages/Home';
 import Services from './pages/Services';
 import Contact from './pages/Contact';
+import Careers from './pages/Careers';
 import Resources from './pages/Resources';
 import ArticleDetail from './pages/ArticleDetail';
 import ApplyForm from './pages/ApplyForm';
@@ -21,6 +22,7 @@ function App() {
             <Route path="/" element={<Home />} />
             <Route path="/services" element={<Services />} />
             <Route path="/contact-us" element={<Contact />} />
+            <Route path="/careers" element={<Careers />} />
             <Route path="/apply" element={<ApplyForm />} />
             <Route path="/more" element={<Resources />} />
             <Route path="/resources/:id" element={<ArticleDetail />} />
