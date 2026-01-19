@@ -2,42 +2,52 @@ import React, { useState } from 'react';
 import './ApplyForm.css';
 
 const ApplyForm = () => {
-    const [formData, setFormData] = useState({
-        fullName: '',
-        email: '',
-        phone: '',
-        position: 'Mobile Application Developer',
-        resume: null
-    });
     const [submitted, setSubmitted] = useState(false);
+    const [isSubmitting, setIsSubmitting] = useState(false);
 
-    const handleChange = (e) => {
-        const { name, value } = e.target;
-        setFormData({ ...formData, [name]: value });
-    };
-
-    const handleFileChange = (e) => {
-        setFormData({ ...formData, resume: e.target.files[0] });
-    };
-
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        // Construct mailto link
-        const subject = `Job Application: ${formData.position} - ${formData.fullName}`;
-        const body = `Name: ${formData.fullName}%0D%0AEmail: ${formData.email}%0D%0APhone: ${formData.phone}%0D%0A%0D%0ANote: Please attach your resume manually to this email.`;
+        setIsSubmitting(true);
 
-        // Open default email client
-        window.location.href = `mailto:hr@risosu.com?subject=${encodeURIComponent(subject)}&body=${body}`;
+        const formData = new FormData(e.target);
+        formData.append('access_key', 'e0dfcfa1-29a5-4631-ba60-e3f1ef49f04c');
 
-        setSubmitted(true);
+        // Add custom subject line
+        const position = formData.get('position');
+        const fullName = formData.get('fullName');
+        formData.append('subject', `Job Application: ${position} - ${fullName}`);
+
+        // Redirect to hr@risosu.com
+        formData.append('redirect', 'https://risosu.com/contact-us');
+
+        try {
+            const response = await fetch('https://api.web3forms.com/submit', {
+                method: 'POST',
+                body: formData
+            });
+
+            const data = await response.json();
+
+            if (data.success) {
+                setSubmitted(true);
+                e.target.reset();
+            } else {
+                alert('Submission failed. Please try again.');
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            alert('An error occurred. Please try again.');
+        } finally {
+            setIsSubmitting(false);
+        }
     };
 
     if (submitted) {
         return (
             <div className="container section text-center">
                 <h2>Thank You!</h2>
-                <p>Your application has been received. We will be in touch shortly.</p>
-                <button className="btn" onClick={() => setSubmitted(false)}>Submit Another</button>
+                <p>Your application has been submitted successfully. We will review your resume and be in touch shortly.</p>
+                <button className="btn" onClick={() => setSubmitted(false)}>Submit Another Application</button>
             </div>
         );
     }
@@ -55,8 +65,6 @@ const ApplyForm = () => {
                             type="text"
                             id="fullName"
                             name="fullName"
-                            value={formData.fullName}
-                            onChange={handleChange}
                             required
                         />
                     </div>
@@ -67,8 +75,6 @@ const ApplyForm = () => {
                             type="email"
                             id="email"
                             name="email"
-                            value={formData.email}
-                            onChange={handleChange}
                             required
                         />
                     </div>
@@ -79,8 +85,6 @@ const ApplyForm = () => {
                             type="tel"
                             id="phone"
                             name="phone"
-                            value={formData.phone}
-                            onChange={handleChange}
                             required
                         />
                     </div>
@@ -90,8 +94,7 @@ const ApplyForm = () => {
                         <select
                             id="position"
                             name="position"
-                            value={formData.position}
-                            onChange={handleChange}
+                            defaultValue="Mobile Application Developer"
                         >
                             <option value="Mobile Application Developer">Mobile Application Developer</option>
                             <option value="Sr Java Developer">Sr Java Developer</option>
@@ -104,14 +107,15 @@ const ApplyForm = () => {
                         <input
                             type="file"
                             id="resume"
-                            name="resume"
+                            name="attachment"
                             accept=".pdf,.doc,.docx"
-                            onChange={handleFileChange}
                             required
                         />
                     </div>
 
-                    <button type="submit" className="btn submit-btn">Submit Application</button>
+                    <button type="submit" className="btn submit-btn" disabled={isSubmitting}>
+                        {isSubmitting ? 'Submitting...' : 'Submit Application'}
+                    </button>
                 </form>
             </div>
         </div>
