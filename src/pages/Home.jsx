@@ -10,7 +10,7 @@ const Home = () => {
                     <h1>Comprehensive HR Solutions</h1>
                     <h6>Empowering organizations to realize their true potential</h6>
                     <p className="hero-subtext">Unleashing potential with a decade of consulting brilliance</p>
-                    <Link to="/contact-us" className="btn">Get Started</Link>
+                    <Link to="/careers" className="btn">Get Started</Link>
                 </div>
             </section>
 
