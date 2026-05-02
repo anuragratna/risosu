@@ -2,15 +2,35 @@ import React from 'react';
 import './Home.css';
 import { Link } from 'react-router-dom';
 
+const clients = [
+    "Anza", "Thomas Cook", "SOTC", "Webville", "Lawrence and Mayo",
+    "Optibyte Digital", "BSE Training institute", "FCI-CCM", "Newgen", "Vega",
+    "ATP international", "Asian Paints", "Smart Box", "Hygge Energy",
+    "Career Canada immigration Service Inc", "Harmony Creative Studio"
+];
 const Home = () => {
     return (
         <div className="home">
             <section className="hero">
                 <div className="hero-content container">
-                    <h1>Comprehensive HR Solutions</h1>
+                    <h1>Building Future-Ready Teams for India’s High-Growth Sectors.</h1>
                     <h6>Empowering organizations to realize their true potential</h6>
                     <p className="hero-subtext">Unleashing potential with a decade of consulting brilliance</p>
                     <Link to="/careers" className="btn">Get Started</Link>
+                </div>
+            </section>
+
+            <section className="clients-section container section">
+                <div className="section-header">
+                    <h2>Our Customers</h2>
+                    <p style={{ marginTop: '1rem', color: '#64748b' }}>Trusted by industry leaders across the globe.</p>
+                </div>
+                <div className="clients-grid">
+                    {clients.map((client, index) => (
+                        <div key={index} className="client-logo-card">
+                            <span className="client-name">{client}</span>
+                        </div>
+                    ))}
                 </div>
             </section>
 
