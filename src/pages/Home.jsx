@@ -60,7 +60,23 @@ const Home = () => {
             <section className="reviews container section">
                 <h2>Reviews</h2>
                 <p>See what our clients say about us.</p>
-                {/* Placeholder for reviews */}
+                                
+        <section className="testimonials container section">
+            <h2>Testimonials</h2>
+            <div className="testimonial-card">
+                <p className="testimonial-quote">
+                    Risosu consistently delivers professional HR solutions, combining deep industry insight with a client‑focused approach. Their expertise ensures that talent acquisition aligns perfectly with business goals, making them a trusted partner.
+                </p>
+                <p className="testimonial-author">– Partner, Leading Organization</p>
+            </div>
+            <div className="testimonial-card">
+                <p className="testimonial-quote">
+                    The Risosu team excels in sourcing and recruitment, demonstrating exceptional organization, independence, and dedication. Their commitment drives successful outcomes and adds significant value to any organization.
+                </p>
+                <p className="testimonial-author">– Executive, Global Enterprise</p>
+            </div>
+        </section>
+                        </section>
             </section>
         </div>
     );
