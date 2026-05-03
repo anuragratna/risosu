@@ -57,10 +57,7 @@ const Home = () => {
                 </div>
             </section>
 
-            <section className="reviews container section">
-                <h2>Reviews</h2>
-                <p>See what our clients say about us.</p>
-                                
+
         <section className="testimonials container section">
             <h2>Testimonials</h2>
             <div className="testimonial-card">
@@ -76,8 +73,7 @@ const Home = () => {
                 <p className="testimonial-author">– Executive, Global Enterprise</p>
             </div>
         </section>
-                        </section>
-            </section>
+
         </div>
     );
 };

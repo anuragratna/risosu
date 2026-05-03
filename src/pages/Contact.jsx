@@ -29,7 +29,7 @@ const Contact = () => {
                                 }}
                             />
                             <h4 style={{ color: 'var(--primary-color)', marginBottom: '0.5rem' }}>Vandana Saxena</h4>
-                            <p style={{ fontStyle: 'italic', color: '#666' }}>Co-Founder and CEO</p>
+                            <p style={{ fontStyle: 'italic', color: '#666' }}>Co-Founder & CEO</p>
                             <p style={{ marginTop: '1rem' }}>
                                 A people-first leader with 20+ years of experience in HR and business management, committed to building high-performing teams and driving organizational success through strategic HR solutions.
                             </p>
